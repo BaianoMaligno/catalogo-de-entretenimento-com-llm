@@ -85,7 +85,7 @@ Os próximos testes devem medir duplicidades, qualidade da normalização dos t�
 
 ## Arquivos privados de trabalho
 
-O catálogo e o backup foram exportados para o [repositório privado Codex](https://github.com/soteropolitano/Codex/tree/main/projetos/catalogo-entretenimento/originais/GPT/Entretenimento). O repositório público mantém apenas documentação e exemplos fictícios.
+O catálogo e o backup foram exportados para o [repositório privado projetos-llms](https://github.com/BaianoMaligno/projetos-llms/tree/main/projetos/catalogo-entretenimento/originais/GPT/Entretenimento). O repositório público mantém apenas documentação e exemplos fictícios.
 
 ## Documentação
 
