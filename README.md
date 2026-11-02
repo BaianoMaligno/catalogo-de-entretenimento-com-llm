@@ -2,11 +2,11 @@
 
 ![Capa do projeto: Catálogo de Entretenimento](https://raw.githubusercontent.com/soteropolitano/catalogo-de-entretenimento-com-llm/main/assets/linkedin-cover.jpg)
 
-Eu mantinha filmes, séries, animes, documentários e jogos em listas separadas. O problema não era apenas lembrar o que queria assistir: uma recomendação podia repetir algo já concluído, ignorar uma avaliação ruim ou confundir um título apenas citado com algo que realmente entrou na lista.
+Eu tinha filmes, séries, animes, documentários e jogos em listas separadas. Quando pedia uma recomendação, aparecia coisa que já tinha visto, abandonado ou avaliado mal. E só citar um título já podia virar registro errado.
 
-Criei este MVP para transformar esse histórico em contexto útil para uma LLM. O catálogo fica no Google Sheets, as fontes e os registros auxiliares ficam organizados no Google Drive e as regras orientam a recomendação antes que o modelo sugira um título.
+A ideia foi fazer a IA consultar meu histórico antes de recomendar. No MVP, organizei o catálogo no Google Sheets e os materiais de apoio no Drive. As regras dizem o que conferir antes de sugerir alguma coisa.
 
-O projeto já foi aplicado com uma base funcional. Este repositório publica a arquitetura, as regras e exemplos fictícios. Meu histórico real, minhas avaliações e os links privados da base não fazem parte da versão pública.
+O MVP já foi usado com uma base funcional. Aqui estão a arquitetura, as regras e exemplos fictícios. Meu histórico, minhas notas e os links privados ficam fora da versão pública.
 
 ## O que o MVP resolve
 
@@ -20,7 +20,7 @@ O projeto já foi aplicado com uma base funcional. Este repositório publica a a
 - usa a avaliação pessoal como sinal principal de preferência;
 - consulta fontes atuais antes de afirmar disponibilidade, data ou plataforma.
 
-Além do histórico, a recomendação considera **como estou naquele momento**. Posso informar que minha energia mental está baixa, média ou alta. O assistente procura conteúdos compatíveis: algo mais fácil de acompanhar quando estou cansado, uma obra que exige atenção moderada quando estou disposto ou um conteúdo mais denso quando tenho energia para me envolver.
+Também considero **minha energia no momento**: baixa, média ou alta. Se estou cansado, quero algo fácil de acompanhar. Se estou disposto, posso escolher algo que exija mais atenção. A recomendação precisa levar isso em conta.
 
 ## Como funciona
 
@@ -38,9 +38,9 @@ flowchart LR
     G --> I[Recomendação com contexto]
 ```
 
-Antes de recomendar, o assistente verifica o catálogo. Um título concluído não volta como novidade. Algo abandonado ou mal avaliado pesa contra sugestões parecidas. Um item marcado como `precisa_confirmar` não é tratado como assistido.
+Primeiro consulta o catálogo. O que já concluí não volta como novidade. O que abandonei ou avaliei mal conta contra sugestões parecidas. E `precisa_confirmar` não significa assistido.
 
-O nível de energia não mede se uma obra é boa ou ruim. Ele representa o esforço que ela costuma exigir de mim. A mesma categoria pode ter conteúdos leves, moderados ou intensos.
+Energia é o esforço que aquele conteúdo exige de mim, não uma nota de qualidade. Dentro da mesma categoria pode ter coisa leve, moderada ou intensa.
 
 ## Estrutura da base
 
@@ -59,7 +59,7 @@ O nível de energia não mede se uma obra é boa ou ruim. Ele representa o esfor
 
 O modelo de dados está em [docs/modelo-de-dados.md](docs/modelo-de-dados.md). O arquivo em [examples/catalogo.csv](examples/catalogo.csv) usa títulos inventados para mostrar o formato sem publicar meu histórico.
 
-## Regras que fizeram diferença
+## Regras do catálogo
 
 - **O histórico vem antes da recomendação.** A LLM consulta a base antes de sugerir.
 - **Minha nota tem mais peso.** Avaliações externas ajudam a explicar o risco, mas não substituem o gosto registrado.
@@ -71,17 +71,17 @@ O modelo de dados está em [docs/modelo-de-dados.md](docs/modelo-de-dados.md). O
 
 ## Engenharia de prompt
 
-As instruções foram organizadas como um contrato de consulta e atualização. Primeiro identificar a intenção, depois localizar o título, verificar duplicidade, interpretar o estado e somente então escrever na base ou recomendar.
+A ordem é simples: entender o pedido, localizar o título, conferir duplicidades e estado. Só depois atualizar a base ou recomendar.
 
-Também separei confiança de estado. Um registro pode ter estado `quero_ver`, mas confiança baixa quando o título exato não foi identificado. Essa separação evita transformar uma conversa vaga em dado confirmado.
+Estado e confiança ficam separados. Um item pode estar em `quero_ver` e ainda ter o título exato em dúvida. Nesse caso, a dúvida precisa continuar registrada.
 
 O desenho está detalhado em [docs/engenharia-de-prompt.md](docs/engenharia-de-prompt.md).
 
 ## Situação atual
 
-A planilha oficial possui uma base principal, visões por estado, resumo, regras, fontes e uma fila de revisão. O fluxo já consegue manter um histórico consultável e usar esse histórico para reduzir recomendações repetidas ou incompatíveis.
+A planilha foi organizada com base principal, visões por estado, resumo, regras, fontes e fila de revisão. O histórico serve para consultar o que já registrei e evitar recomendações repetidas ou incompatíveis.
 
-Os próximos testes devem medir duplicidades, qualidade da normalização dos títulos, atualização de progresso e quanto as recomendações melhoram quando notas e rejeições passam a ser usadas de forma consistente.
+Os próximos testes são de duplicidade, identificação de títulos e atualização de progresso. Também falta medir a diferença nas recomendações usando notas e rejeições de forma consistente.
 
 ## Arquivos privados de trabalho
 
